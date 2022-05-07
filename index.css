@@ -1,0 +1,29 @@
+body {
+	background-color: black;
+	color: white;
+	display: flex;
+	flex-direction: column;
+	height: 97.5vh;
+}
+
+body > * {
+	flex: 1;
+}
+
+#board {
+	flex: 0;
+	display: grid;
+	grid-template-columns: auto auto auto;
+	margin: 0 auto;
+}
+
+button {
+	height: 25vmin;
+	width: 25vmin;
+}
+
+header, footer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
