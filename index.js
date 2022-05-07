@@ -1,3 +1,39 @@
+class TicTacToe {
+	constructor(currentPlayerElement, buttons) {
+		this.currentPlayerElement = currentPlayerElement;
+		this.buttons = buttons
+
+		this.currentPlayer = 'X';
+		console.log(this)
+
+		this.buttons.forEach(button => {
+			button.addEventListener('click', this.handleButtonClick.bind(this));
+		})
+	}
+
+	/**
+	 * @param {MouseEvent} event
+	 */
+	handleButtonClick(event) {
+		event.currentTarget.textContent = this.currentPlayer;
+		event.currentTarget.disabled = true;
+		this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
+		this.currentPlayerElement.textContent = this.currentPlayer
+
+		for (const indexes of WINNING_INDEXES) {
+			const first = this.buttons[indexes[0]].textContent
+			if (first && indexes.every(index => this.buttons[index].textContent === first)) {
+				this.buttons.forEach(button => button.disabled = true)
+				return alert(first + ' won!');
+			}
+		}
+
+		if (this.buttons.every(button => button.textContent !== '')) {
+			alert('Draw!')
+		}
+	}
+}
+
 const WINNING_INDEXES = [
 	[0, 1, 2],
 	[3, 4, 5],
@@ -11,34 +47,4 @@ const WINNING_INDEXES = [
 	[6, 4, 2]
 ]
 
-const buttons = [...document.querySelectorAll('button')];
-const currentPlayerElement = document.querySelector('#current-player');
-
-let currentPlayer = 'X';
-
-
-/**
- * @param {MouseEvent} event
- */
-function handleButtonClick(event){
-	event.currentTarget.textContent = currentPlayer;
-	event.currentTarget.disabled = true;
-	currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-	currentPlayerElement.textContent = currentPlayer
-
-	for (const indexes of WINNING_INDEXES){
-		const first = buttons[indexes[0]].textContent
-		if (first && indexes.every(index => buttons[index].textContent === first)){
-			buttons.forEach(button => button.disabled = true)
-			return alert(first + ' won!');
-		}
-	}
-
-	if (buttons.every(button => button.textContent !== '')){
-		alert('Draw!')
-	}
-}
-
-buttons.forEach(button => {
-	button.addEventListener('click', handleButtonClick);
-})
+new TicTacToe(document.querySelector('#current-player'), [...document.querySelectorAll('button')])
