@@ -17,7 +17,7 @@ body > * {
 	margin: 0 auto;
 }
 
-button {
+#board button {
 	height: 25vmin;
 	width: 25vmin;
 	font-size: 10rem;
@@ -30,6 +30,6 @@ header, footer {
 	justify-content: center;
 }
 
-button:disabled {
+#board button:disabled {
 	color: black;
 }
