@@ -1,50 +1,65 @@
 class TicTacToe {
-	constructor(currentPlayerElement, buttons) {
-		this.currentPlayerElement = currentPlayerElement;
-		this.buttons = buttons
+	static WINNING_INDEXES = [
+		[0, 1, 2],
+		[3, 4, 5],
+		[6, 7, 8],
 
-		this.currentPlayer = 'X';
-		console.log(this)
+		[0, 3, 6],
+		[1, 4, 7],
+		[2, 5, 8],
 
-		this.buttons.forEach(button => {
-			button.addEventListener('click', this.handleButtonClick.bind(this));
-		})
+		[0, 4, 8],
+		[6, 4, 2]
+	]
+
+	constructor() {
+		this._board = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+		this._currentPlayer = 'X';
 	}
 
-	/**
-	 * @param {MouseEvent} event
-	 */
-	handleButtonClick(event) {
-		event.currentTarget.textContent = this.currentPlayer;
-		event.currentTarget.disabled = true;
-		this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
-		this.currentPlayerElement.textContent = this.currentPlayer
+	get currentPlayer(){
+		return this._currentPlayer
+	}
 
-		for (const indexes of WINNING_INDEXES) {
-			const first = this.buttons[indexes[0]].textContent
-			if (first && indexes.every(index => this.buttons[index].textContent === first)) {
-				this.buttons.forEach(button => button.disabled = true)
-				return alert(first + ' won!');
+	place(i) {
+		const value = this._board[i];
+		if (value) return false;
+		this._board[i] = this._currentPlayer;
+		this._currentPlayer = this._currentPlayer === 'X' ? 'O' : 'X';
+		return true;
+	}
+
+	get winner() {
+		for (const indexes of TicTacToe.WINNING_INDEXES) {
+			const first = this._board[indexes[0]]
+			if (first && indexes.every(index => this._board[index] === first)) {
+				return first;
 			}
 		}
-
-		if (this.buttons.every(button => button.textContent !== '')) {
-			alert('Draw!')
+		if (this._board.every(value => value !== 0)) {
+			return null
 		}
+
+		return undefined
 	}
 }
 
-const WINNING_INDEXES = [
-	[0, 1, 2],
-	[3, 4, 5],
-	[6, 7, 8],
 
-	[0, 3, 6],
-	[1, 4, 7],
-	[2, 5, 8],
+const tictactoe = new TicTacToe()
 
-	[0, 4, 8],
-	[6, 4, 2]
-]
+const buttons = [...document.querySelectorAll('button')]
+const currentPlayerElement = document.querySelector('#current-player')
 
-new TicTacToe(document.querySelector('#current-player'), [...document.querySelectorAll('button')])
+buttons.forEach((button, i) => {
+	button.addEventListener('click', event => {
+		if (!tictactoe.place(i)) return;
+
+		event.currentTarget.textContent = tictactoe.currentPlayer;
+		event.currentTarget.disabled = true;
+		currentPlayerElement.textContent = tictactoe.currentPlayer;
+		const winner = tictactoe.winner;
+		if (winner === undefined) return;
+		buttons.forEach(button => button.disabled = true);
+		alert(winner ? winner + ' won!' : 'Draw!');
+	});
+});
