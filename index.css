@@ -28,3 +28,7 @@ header, footer {
 	align-items: center;
 	justify-content: center;
 }
+
+button:disabled {
+	color: black;
+}
