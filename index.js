@@ -12,6 +12,7 @@ const WINNING_INDEXES = [
 ]
 
 const buttons = [...document.querySelectorAll('button')];
+const currentPlayerElement = document.querySelector('#current-player');
 
 let currentPlayer = 'X';
 
@@ -23,12 +24,18 @@ function handleButtonClick(event){
 	event.currentTarget.textContent = currentPlayer;
 	event.currentTarget.disabled = true;
 	currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+	currentPlayerElement.textContent = currentPlayer
 
 	for (const indexes of WINNING_INDEXES){
 		const first = buttons[indexes[0]].textContent
 		if (first && indexes.every(index => buttons[index].textContent === first)){
+			buttons.forEach(button => button.disabled = true)
 			return alert(first + ' won!');
 		}
+	}
+
+	if (buttons.every(button => button.textContent !== '')){
+		alert('Draw!')
 	}
 }
 
