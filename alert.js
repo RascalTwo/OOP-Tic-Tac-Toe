@@ -1,4 +1,4 @@
-class PromptTicTacToe extends TicTacToe {
+class AlertTicTacToe extends TicTacToe {
 	constructor() {
 		super();
 		this.play()
@@ -54,4 +54,4 @@ class PromptTicTacToe extends TicTacToe {
 	}
 }
 
-new PromptTicTacToe()
+new AlertTicTacToe()
