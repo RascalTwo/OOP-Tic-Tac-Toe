@@ -1,0 +1,12 @@
+#board button {
+	position: relative;
+}
+
+#board button span {
+	position: absolute;
+	font-size: 1rem;
+}
+
+#board button div {
+	font-size: 10rem;
+}
