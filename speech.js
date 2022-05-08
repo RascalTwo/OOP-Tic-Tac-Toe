@@ -9,6 +9,7 @@ class TicTacToeRecognition {
 		'bottom left',
 		'bottom center',
 		'bottom right',
+		'restart'
 	];
 	constructor() {
 		const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
@@ -40,6 +41,17 @@ class TicTacToeRecognition {
 	})
 }
 
+class SpeechDOMTile extends DOMTile {
+	constructor(button) {
+		super(button)
+		this.output = this.button.querySelector('div')
+	}
+
+	render() {
+		this.output.textContent = this.value;
+	}
+}
+
 class SpeechTicTacToe extends DOMTicTacToe {
 	constructor(currentPlayerElement, messageOutput, restartButton, buttons) {
 		super(currentPlayerElement, messageOutput, restartButton, buttons);
@@ -48,36 +60,22 @@ class SpeechTicTacToe extends DOMTicTacToe {
 	}
 
 	render() {
-		for (let i = 0; i < this._board.length; i++) {
-			if (this._board[i]) {
-				this.buttons[i].querySelector('div').textContent = this._board[i];
-				this.buttons[i].disabled = true;
+		super.render();
+		if (this.winner !== undefined) return;
+
+		this.recognition.getSpeechResult().then(word => {
+			const index = TicTacToeRecognition.POSITIONS.indexOf(word.toLowerCase().replace(/[-_]/g, ' '));
+
+			if (index === 9) return this.restart();
+
+			if (index === -1) {
+				this.message = 'Invalid word: ' + word;
 			} else {
-				this.buttons[i].querySelector('div').textContent = ''
-				this.buttons[i].disabled = false;
+				this.place(index);
 			}
-		}
 
-		this.currentPlayerElement.textContent = this.currentPlayer;
-
-		const winner = this.winner;
-		if (winner !== undefined) {
-			this.buttons.forEach(button => button.disabled = true);
-			this.message = winner ? winner + ' won!' : 'Draw!';
-		} else if (this.recognition) {
-			this.recognition.getSpeechResult().then(word => {
-				const index = TicTacToeRecognition.POSITIONS.indexOf(word.toLowerCase().replace(/[-_]/g, ' '))
-
-				if (index === -1) {
-					this.message = 'Invalid word: ' + word
-				} else {
-					this.place(index)
-				}
-				this.render()
-			})
-		}
-
-		this.messageOutput.innerHTML = this.message;
+			this.render();
+		})
 	}
 }
 
@@ -85,5 +83,5 @@ new SpeechTicTacToe(
 	document.querySelector('#current-player'),
 	document.querySelector('#message'),
 	document.querySelector('footer button'),
-	[...document.querySelectorAll('#board button')]
+	Array.from(document.querySelectorAll('#board button'), button => new SpeechDOMTile(button))
 )
